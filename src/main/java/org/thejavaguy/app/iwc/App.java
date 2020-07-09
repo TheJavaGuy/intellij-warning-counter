@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -37,15 +36,9 @@ public final class App {
         }
     }
 
-    public static void main(String[] args) throws IOException {
-        LOGGER.debug("App START");
-        Args objArgs = new Args();
-        new JCommander(objArgs, args);
-        LOGGER.debug("dir {}", objArgs.dir());
-        App app = new App();
-        Set<Path> filesInDir = app.filesInDir(Paths.get(objArgs.dir()), 1);
-        List<XML> allProblems = new ArrayList<>();
-        Report report = new Report();
+    public Report reportForDir(Path dir) throws IOException {
+        Report ret = new Report();
+        Set<Path> filesInDir = filesInDir(dir, 1);
         for (Path path : filesInDir) {
             LOGGER.trace("Processing {}", path);
             // temporary workaround to speed up processing until I find better solution for XML parsing
@@ -64,11 +57,20 @@ public final class App {
                 String file = problemNode.xpath("//file/text()").get(0);
                 String severity = problemNode.xpath("//problem_class/@severity").get(0);
                 ProblemClass problemClass = new ProblemClass(severity);
-                report.add(new Problem(file, problemClass));
+                ret.add(new Problem(file, problemClass));
             }
-            allProblems.addAll(problemNodes);
         }
-        LOGGER.info("Total problems: {}", allProblems.size());
+        return ret;
+    }
+
+    public static void main(String[] args) throws IOException {
+        LOGGER.debug("App START");
+        Args objArgs = new Args();
+        new JCommander(objArgs, args);
+        LOGGER.debug("dir {}", objArgs.dir());
+        App app = new App();
+        Report report = app.reportForDir(Paths.get(objArgs.dir()));
+        LOGGER.info("Total problems: {}", report.size());
         LOGGER.info("Problems by severities: {}", report.problemCountBySeverities());
         LOGGER.debug("App END");
     }
