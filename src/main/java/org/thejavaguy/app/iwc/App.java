@@ -9,6 +9,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.eaxy.Document;
+import org.eaxy.Element;
+import org.eaxy.Xml;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.thejavaguy.app.iwc.domain.Problem;
@@ -16,8 +19,6 @@ import org.thejavaguy.app.iwc.domain.ProblemClass;
 import org.thejavaguy.app.iwc.domain.Report;
 
 import com.beust.jcommander.JCommander;
-import com.jcabi.xml.XML;
-import com.jcabi.xml.XMLDocument;
 
 /**
  * Entry point for IntelliJ Warning Counter application.
@@ -42,20 +43,20 @@ public final class App {
         for (Path path : filesInDir) {
             LOGGER.trace("Processing {}", path);
             // temporary workaround to speed up processing until I find better solution for XML parsing
-            if (path.toAbsolutePath().toString().contains("JavaDoc.xml")) {
-                continue;
-            }
-            if (path.toAbsolutePath().toString().contains("unused.xml")) {
-                continue;
-            }
-            if (path.toAbsolutePath().toString().contains("/.xml")) {
-                continue;
-            }
-            XML intellijWarnings = new XMLDocument(path);
-            List<XML> problemNodes = intellijWarnings.nodes("//problem");
-            for (XML problemNode : problemNodes) {
-                String file = problemNode.xpath("//file/text()").get(0);
-                String severity = problemNode.xpath("//problem_class/@severity").get(0);
+//            if (path.toAbsolutePath().toString().contains("JavaDoc.xml")) {
+//                continue;
+//            }
+//            if (path.toAbsolutePath().toString().contains("unused.xml")) {
+//                continue;
+//            }
+//            if (path.toAbsolutePath().toString().contains("/.xml")) {
+//                continue;
+//            }
+            Document doc = Xml.read(path.toAbsolutePath().toFile());
+            List<Element> problemElements = doc.find("problem").elements();
+            for (Element problemElement : problemElements) {
+                String file = problemElement.find("file").first().text();
+                String severity = problemElement.find("problem_class").first().attr("severity");
                 ProblemClass problemClass = new ProblemClass(severity);
                 ret.add(new Problem(file, problemClass));
             }
