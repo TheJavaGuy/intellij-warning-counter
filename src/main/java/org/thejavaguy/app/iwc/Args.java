@@ -3,16 +3,10 @@ package org.thejavaguy.app.iwc;
 import com.beust.jcommander.Parameter;
 
 public final class Args {
-    @Parameter(names = "-verbose")
-    private int verbose = 1;
-    @Parameter(names = "-groups", description = "Comma-separated list of group names to be run")
-    private String groups;
+    @Parameter(names = "--dir", required = true, description = "A directory with exported IntelliJ Inspection Results")
+    private String dir;
 
-    public final int getVerbose() {
-        return verbose;
-    }
-
-    public final String getGroups() {
-        return groups;
+    public final String dir() {
+        return dir;
     }
 }
