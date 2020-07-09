@@ -33,4 +33,23 @@ public final class Report {
         }
         return ret;
     }
+
+    public Map<String, Integer> diff(Report other) {
+        Map<String, Integer> ret = new TreeMap<>();
+        Map<String, Integer> thisCountBySeverities = this.problemCountBySeverities();
+        Map<String, Integer> otherCountBySeverities = other.problemCountBySeverities();
+        for (String thisSeverity : thisCountBySeverities.keySet()) {
+            if (otherCountBySeverities.containsKey(thisSeverity)) {
+                ret.put(thisSeverity, thisCountBySeverities.get(thisSeverity) - otherCountBySeverities.get(thisSeverity));
+            } else {
+                ret.put(thisSeverity, thisCountBySeverities.get(thisSeverity));
+            }
+        }
+        for (String otherSeverity : otherCountBySeverities.keySet()) {
+            if (!thisCountBySeverities.containsKey(otherSeverity)) {
+                ret.put(otherSeverity, otherCountBySeverities.get(otherSeverity));
+            }
+        }
+        return ret;
+    }
 }
