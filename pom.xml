@@ -5,7 +5,7 @@
     <groupId>org.thejavaguy.app</groupId>
     <artifactId>intellij-warning-counter</artifactId>
     <packaging>jar</packaging>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <name>IntelliJ Warning Counter</name>
     <description>Count warnings in Java project based on IntelliJ XML report</description>
     <licenses>
