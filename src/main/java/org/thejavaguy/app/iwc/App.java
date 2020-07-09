@@ -72,6 +72,12 @@ public final class App {
         Report report = app.reportForDir(Paths.get(objArgs.dir()));
         LOGGER.info("Total problems: {}", report.size());
         LOGGER.info("Problems by severities: {}", report.problemCountBySeverities());
+        if (objArgs.dirToCompare() != null) {
+            LOGGER.debug("dir to compare {}", objArgs.dirToCompare());
+            Report reportToCompare = app.reportForDir(Paths.get(objArgs.dirToCompare()));
+            LOGGER.info("Total problems: {}", reportToCompare.size());
+            LOGGER.info("Problems by severities: {}", reportToCompare.problemCountBySeverities());
+        }
         LOGGER.debug("App END");
     }
 }

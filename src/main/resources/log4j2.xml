@@ -3,7 +3,7 @@
     <Appenders>
         <Console name="AP_CONSOLE" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
-            <ThresholdFilter level="info"/>
+            <ThresholdFilter level="debug"/>
         </Console>
         <RollingFile name="AP_ROLLING" fileName="log/app.log"
                      filePattern="log/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
