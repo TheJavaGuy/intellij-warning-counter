@@ -12,6 +12,9 @@ import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.thejavaguy.app.iwc.domain.Problem;
+import org.thejavaguy.app.iwc.domain.ProblemClass;
+import org.thejavaguy.app.iwc.domain.Report;
 
 import com.beust.jcommander.JCommander;
 import com.jcabi.xml.XML;
@@ -38,15 +41,35 @@ public final class App {
         LOGGER.debug("App START");
         Args objArgs = new Args();
         new JCommander(objArgs, args);
-        System.out.println(objArgs.dir());
+        LOGGER.debug("dir {}", objArgs.dir());
         App app = new App();
         Set<Path> filesInDir = app.filesInDir(Paths.get(objArgs.dir()), 1);
-        List<XML> problems = new ArrayList<>();
+        List<XML> allProblems = new ArrayList<>();
+        Report report = new Report();
         for (Path path : filesInDir) {
+            LOGGER.trace("Processing {}", path);
+            // temporary workaround to speed up processing until I find better solution for XML parsing
+            if (path.toAbsolutePath().toString().contains("JavaDoc.xml")) {
+                continue;
+            }
+            if (path.toAbsolutePath().toString().contains("unused.xml")) {
+                continue;
+            }
+            if (path.toAbsolutePath().toString().contains("/.xml")) {
+                continue;
+            }
             XML intellijWarnings = new XMLDocument(path);
-            problems.addAll(intellijWarnings.nodes("//problem"));
+            List<XML> problemNodes = intellijWarnings.nodes("//problem");
+            for (XML problemNode : problemNodes) {
+                String file = problemNode.xpath("//file/text()").get(0);
+                String severity = problemNode.xpath("//problem_class/@severity").get(0);
+                ProblemClass problemClass = new ProblemClass(severity);
+                report.add(new Problem(file, problemClass));
+            }
+            allProblems.addAll(problemNodes);
         }
-        LOGGER.info("Total problems: {}", problems.size());
+        LOGGER.info("Total problems: {}", allProblems.size());
+        LOGGER.info("Problems by severities: {}", report.problemCountBySeverities());
         LOGGER.debug("App END");
     }
 }
