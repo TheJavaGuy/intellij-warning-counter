@@ -41,7 +41,7 @@
         <mockito.version>3.3.3</mockito.version>
         <guava.version>29.0-jre</guava.version>
         <jcommander.version>1.60</jcommander.version>
-        <jcabi-xml.version>0.22.2</jcabi-xml.version>
+        <eaxy.version>0.2.2</eaxy.version>
         <slf4j.version>1.7.25</slf4j.version>
         <log4j2.version>2.13.3</log4j2.version>
     </properties>
@@ -82,9 +82,9 @@
             <version>${jcommander.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.jcabi</groupId>
-            <artifactId>jcabi-xml</artifactId>
-            <version>${jcabi-xml.version}</version>
+            <groupId>org.eaxy</groupId>
+            <artifactId>eaxy</artifactId>
+            <version>0.2.2</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
